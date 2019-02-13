@@ -14,7 +14,6 @@ module pc(
             pc <= 32'h00000000;
         end else begin
             if (pc_en) pc <= npc;
-            else pc <= pc;
-        end         
+            end         
     end
 endmodule

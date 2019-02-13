@@ -32,10 +32,4 @@ module inst_fetch(
         .pc_4(pc_4)
     );
     
-    rom MIPS_ROM(
-        .clka(clk),    // input wire clka
-        .addra(pc[11:2]),  // input wire [9 : 0] addra
-        .douta(inst)  // output wire [31 : 0] douta
-    );
-    
 endmodule

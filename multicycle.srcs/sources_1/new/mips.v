@@ -39,7 +39,7 @@ module mips(
     wire sel_mem_to_reg;
     wire[31:0] reg_wdata;
     wire sel_reg_dst;
-    wire[31:0] reg_dst;
+    wire[4:0] reg_dst;
     
     wire rf_w;
     wire[31:0] rd1,rd2;
@@ -60,6 +60,10 @@ module mips(
     
     wire sel_npc;
     
+    // control unit
+    
+    
+    // instruction fetch
     
     pc mips_pc(
         .rst(rst),
@@ -98,14 +102,16 @@ module mips(
         ._reg(data)
     );
     
-    mux_2_32 reg_dst_mux(
-        .in1(alu_out),
-        .in2(data),
+    // decode instruction
+    
+    mux_2_5 reg_dst_mux(
+        .in1(rt),
+        .in2(rd),
         .sel(sel_reg_dst),
         .out(reg_dst)
     );
     
-    mux_2_32 mem_to_reg_sel(
+    mux_2_32 mem_to_reg_mux(
         .in1(data),
         .in2(alu_out),
         .sel(sel_mem_to_reg),
@@ -137,6 +143,8 @@ module mips(
         ._reg(B)
     );
     
+    // execute
+    
     mux_2_32 alu_srcA_mux(
         .in1(pc),
         .in2(A),
@@ -155,7 +163,7 @@ module mips(
         .in1(B),
         .in2(32'h00000004),
         .in3(ext16_32),
-        .in4(left),
+        .in4(left2),
         .sel(sel_alu_srcB),
         .out(alu_srcB)
     );
@@ -175,6 +183,8 @@ module mips(
         .in(alu_res),
         ._reg(alu_out)
     );
+    
+    // select npc
     
     mux_2_32 npc_mux(
         .in1(alu_res),

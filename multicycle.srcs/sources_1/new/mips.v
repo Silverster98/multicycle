@@ -61,7 +61,24 @@ module mips(
     wire sel_npc;
     
     // control unit
-    
+    cu mips_cu(
+        .clk(clk),
+        .rst(rst),
+        .beqout(beqout),
+        .op(op),
+        .func(func),
+        .pc_w(pc_w),
+        .sel_pc_addr_mux(sel_pc_addr_mux),
+        .ram_w(ram_w),
+        .ir_w(ir_w),
+        .sel_reg_dst(sel_reg_dst),
+        .sel_mem_to_reg(sel_mem_to_reg),
+        .rf_w(rf_w),
+        .sel_alu_srcA(sel_alu_srcA),
+        .sel_alu_srcB(sel_alu_srcB),
+        .alu_ctrl(alu_ctrl),
+        .sel_npc(sel_npc)
+    );
     
     // instruction fetch
     

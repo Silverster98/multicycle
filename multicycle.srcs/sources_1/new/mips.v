@@ -137,9 +137,9 @@ module mips(
     
     regfile rf(
         .clk(clk),
-        .rs1_in(rs),
-        .rs2_in(rt),
-        .rd_in(reg_dst),
+        .rs1_i(rs),
+        .rs2_i(rt),
+        .rd_i(reg_dst),
         .w_en(rf_w),
         .w_data(reg_wdata),
         .rs1_o(rd1),

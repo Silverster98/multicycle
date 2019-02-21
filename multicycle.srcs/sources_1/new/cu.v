@@ -110,6 +110,8 @@ module cu(
         
         sel_npc = 0;
         
+        if (state == 3'b000) alu_ctrl = 3'b000;
+        else begin
         case (op)
             `INST_ORI: alu_ctrl = 3'b011; // ori
             `INST_BEQ: alu_ctrl = 3'b001; // beq
@@ -120,6 +122,6 @@ module cu(
             end
             default: alu_ctrl = 3'b000;
         endcase
-        
+        end
     end
 endmodule

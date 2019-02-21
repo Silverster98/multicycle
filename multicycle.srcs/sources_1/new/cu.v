@@ -21,16 +21,18 @@ module cu(
     output reg sel_npc
     );
     
-    parameter[2:0] sif = 3'b000,
-                   sid = 3'b001,
-                   exe1 = 3'b010, // sub, and, addiu, or...
-                   exe2 = 3'b011, // beq
-                   exe3 = 3'b100, // sw, lw
-                   smem = 3'b101, // mem state
-                   swb1 = 3'b110, // sub, and, addiu, or...
-                   swb2 = 3'b111; // lw
+    parameter[3:0] sif = 4'b0000,
+                   sid = 4'b0001,
+                   exe1 = 4'b0010, // sub, and, addiu, or...
+                   exe2 = 4'b0011, // beq
+                   exe3 = 4'b0100, // sw, lw
+                   smem = 4'b0101, // mem state
+                   swb1 = 4'b0110, // sub, and, addiu, or...
+                   swb2 = 4'b0111, // lw
+                   swait1 = 4'b1000, // in lw wait ram
+                   swait2 = 4'b1001; // in lw wait ram
     
-    reg[2:0] state, next_state;
+    reg[3:0] state, next_state;
     initial begin
         state = sif;
         pc_w = 0;
@@ -61,7 +63,8 @@ module cu(
                 case (op)
                     `INST_J: next_state = sif;
                     `INST_BEQ: next_state = exe2;
-                    `INST_LW || `INST_SW: next_state = exe3;
+                    `INST_LW: next_state = exe3;
+                    `INST_SW: next_state = exe3;
                     default next_state = exe1;
                 endcase
             end
@@ -69,9 +72,11 @@ module cu(
             exe2: next_state = sif;
             exe3: next_state = smem;
             smem: begin
-                if (op == `INST_LW) next_state = swb2;
+                if (op == `INST_LW) next_state = swait1;
                 else next_state = sif;
             end
+            swait1: next_state = swait2;
+            swait2: next_state = swb2;
             swb1: next_state = sif;
             swb2: next_state = sif;
             default: next_state = sif;

@@ -4,8 +4,6 @@
 memory_initialization_radix=16;
 memory_initialization_vector=
 240a000b,
-240b0005,
-014b6024,
-3c0a0001,
-3c0b0005,
-016a6020;
+354bfff5,
+ac0a0005,
+8c0b0005;

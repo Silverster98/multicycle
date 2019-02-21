@@ -9,6 +9,7 @@ module mips(
     wire[31:0] pc;
     wire pc_w;
     wire sel_pc_addr_mux;
+    wire[31:0] w_addr;
     
     wire ram_w;
     wire[31:0] ram_addr;
@@ -91,13 +92,16 @@ module mips(
         .pc(pc)
     );
     
+    assign w_addr = {alu_out[29:0], 2'b00};
+    
     mux_2_32 pc_addr_mux(
         .in1(pc),
-        .in2(alu_out),
+        .in2(w_addr),
         .sel(sel_pc_addr_mux),
         .out(ram_addr)
     );
     
+    assign ram_data_in = B;
     ram mips_ram (
       .clka(clk),    // input wire clka
       .wea(ram_w),      // input wire [0 : 0] wea

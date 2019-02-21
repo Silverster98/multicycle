@@ -111,11 +111,13 @@ module cu(
         sel_npc = 0;
         
         case (op)
-            `INST_SUB: alu_ctrl = 3'b001;// sub
-            `INST_ORI: alu_ctrl = 3'b011;// ori
-            `INST_SLL: alu_ctrl = 3'b100;// sll
-            `INST_BEQ: alu_ctrl = 3'b001;// beq
-            `INST_ORI: alu_ctrl = 3'b011;// or
+            `INST_ORI: alu_ctrl = 3'b011; // ori
+            `INST_BEQ: alu_ctrl = 3'b001; // beq
+            `INST_TYPE_R: begin
+                if (func == `INST_SLL) alu_ctrl = 3'b100; // sll
+                else if (func == `INST_SUB) alu_ctrl = 3'b001; // sub
+                else if (func == `INST_AND) alu_ctrl = 3'b010; // and
+            end
             default: alu_ctrl = 3'b000;
         endcase
         

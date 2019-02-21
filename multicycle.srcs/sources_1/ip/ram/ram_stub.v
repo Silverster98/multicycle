@@ -1,7 +1,7 @@
 // Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2018.1 (lin64) Build 2188600 Wed Apr  4 18:39:19 MDT 2018
-// Date        : Sun Feb 17 16:19:42 2019
+// Date        : Thu Feb 21 10:11:56 2019
 // Host        : ubuntu running 64-bit Ubuntu 16.04.5 LTS
 // Command     : write_verilog -force -mode synth_stub
 //               /home/silvester/project/multicycle/multicycle.srcs/sources_1/ip/ram/ram_stub.v

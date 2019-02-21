@@ -15,3 +15,11 @@ module unsign_extend_16(
     
     assign output32 = {16'b0, imm16};
 endmodule
+
+module load_uper_imm(
+    input wire[15:0] imm16,
+    output wire[31:0] output32
+    );
+    
+    assign output32 = {imm16, 16'b0};
+endmodule

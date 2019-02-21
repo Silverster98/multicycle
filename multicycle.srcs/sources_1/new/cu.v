@@ -16,7 +16,7 @@ module cu(
     output reg sel_mem_to_reg,
     output reg rf_w,
     output reg sel_alu_srcA,
-    output reg[1:0] sel_alu_srcB,
+    output reg[2:0] sel_alu_srcB,
     output reg[2:0] alu_ctrl,
     output reg sel_npc
     );
@@ -41,7 +41,7 @@ module cu(
         sel_mem_to_reg = 0;
         rf_w = 0;
         sel_alu_srcA = 0;
-        sel_alu_srcB = 2'b00;
+        sel_alu_srcB = 3'b000;
         alu_ctrl = 3'b000;
         sel_npc = 0;
     end
@@ -91,7 +91,7 @@ module cu(
         if (state == sif) ir_w = 1;
         else ir_w = 0;
         
-        if (op == `INST_ADDIU || op == `INST_ORI || op == `INST_LW) sel_reg_dst = 0;
+        if (op == `INST_ADDIU || op == `INST_ORI || op == `INST_LW || op == `INST_LUI) sel_reg_dst = 0;
         else sel_reg_dst = 1;
         
         if (state == swb1) sel_mem_to_reg = 1;
@@ -103,10 +103,11 @@ module cu(
         if (state == sif) sel_alu_srcA = 0;
         else sel_alu_srcA = 1;
         
-        if (state == sif && op == `INST_BEQ) sel_alu_srcB = 2'b11;
-        else if (state == sif) sel_alu_srcB = 2'b01;
-        else if(op == `INST_ADDIU || op == `INST_ORI || op == `INST_SW || op == `INST_LW) sel_alu_srcB = 2'b10;
-        else sel_alu_srcB = 2'b00;
+        if (state == sif && op == `INST_BEQ) sel_alu_srcB = 3'b011;
+        else if (state == sif) sel_alu_srcB = 3'b001;
+        else if(op == `INST_ADDIU || op == `INST_ORI || op == `INST_SW || op == `INST_LW) sel_alu_srcB = 3'b010;
+        else if(op == `INST_LUI) sel_alu_srcB = 3'b100;
+        else sel_alu_srcB = 3'b000;
         
         sel_npc = 0;
         

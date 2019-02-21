@@ -12,7 +12,7 @@ module testbench();
         clk = 0;
         rst = 1;
         #17 rst = 0;
-        #240;
+        #300;
         $stop;
     end
     

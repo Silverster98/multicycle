@@ -45,12 +45,13 @@ module mips(
     wire[31:0] rd1,rd2;
     
     wire[31:0] ext16_32;
+    wire[31:0] left16;
     wire[31:0] left2;
     
     wire[31:0] A,B;
     wire sel_alu_srcA;
     wire[31:0] alu_srcA;
-    wire[1:0] sel_alu_srcB;
+    wire[2:0] sel_alu_srcB;
     wire[31:0] alu_srcB;
     
     wire[2:0]  alu_ctrl;
@@ -174,13 +175,19 @@ module mips(
         .output32(ext16_32)
     );
     
+    load_uper_imm left_16(
+        .imm16(imm16),
+        .output32(left16)
+    );
+    
     assign left2 = {ext16_32[29:0], 2'b00};
     
-    mux_4_32 alu_srcB_mux(
+    mux_5_32 alu_srcB_mux(
         .in1(B),
         .in2(32'h00000004),
         .in3(ext16_32),
         .in4(left2),
+        .in5(left16),
         .sel(sel_alu_srcB),
         .out(alu_srcB)
     );

@@ -3,8 +3,9 @@
 ;WIDTH = 32;
 memory_initialization_radix=16;
 memory_initialization_vector=
-240a0005,
-240b0005,
-114b0001,
-014b6020,
-014b6022;
+08000004,
+240a0001,
+240a0002,
+240a0003,
+240a0004,
+254b0005;

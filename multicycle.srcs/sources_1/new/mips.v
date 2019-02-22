@@ -61,7 +61,10 @@ module mips(
     wire beqout;
     wire[31:0] alu_out;
     
+    wire[31:0] ext26_32;
     wire sel_npc;
+    wire[31:0] _npc;
+    wire sel_npc_jpc;
     
     // control unit
     cu mips_cu(
@@ -81,7 +84,8 @@ module mips(
         .sel_alu_srcA(sel_alu_srcA),
         .sel_alu_srcB(sel_alu_srcB),
         .alu_ctrl(alu_ctrl),
-        .sel_npc(sel_npc)
+        .sel_npc(sel_npc),
+        .sel_npc_jpc(sel_npc_jpc)
     );
     
     // instruction fetch 
@@ -90,7 +94,7 @@ module mips(
         .rst(rst),
         .clk(clk),
         .pc_en(pc_write),
-        .npc(npc),
+        .npc(_npc),
         .pc(pc)
     );
     
@@ -215,12 +219,23 @@ module mips(
     );
     
     // select npc
+    unsign_extend_26_left2 ext26(
+        .imm26(imm26),
+        .output32(ext26_32)
+    );
     
     mux_2_32 npc_mux(
         .in1(alu_res),
         .in2(alu_out),
         .sel(sel_npc),
         .out(npc)
+    );
+    
+    mux_2_32 npc_jpc_mux(
+        .in1(npc),
+        .in2(ext26_32),
+        .sel(sel_npc_jpc),
+        .out(_npc)
     );
     
 endmodule

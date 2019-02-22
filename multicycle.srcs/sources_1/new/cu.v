@@ -19,7 +19,8 @@ module cu(
     output reg sel_alu_srcA,
     output reg[2:0] sel_alu_srcB,
     output reg[2:0] alu_ctrl,
-    output reg sel_npc
+    output reg sel_npc,
+    output wire sel_npc_jpc
     );
     
     parameter[3:0] sif = 4'b0000,
@@ -38,7 +39,9 @@ module cu(
     reg[3:0] state, next_state;
     
     assign pc_write = pc_w == 1 ? 1 :
-                      (state == 4'b0011 && beqout == 1) ? 1 : 0;
+                      (state == sid && op == `INST_J) ? 1 :
+                      (state == exe2 && beqout == 1) ? 1 : 0;
+    assign sel_npc_jpc = (state == sid && op == `INST_J) ? 1 : 0;
     initial begin
         state = sif;
         pc_w = 0;
@@ -67,7 +70,7 @@ module cu(
             sif: next_state = sid;
             sid: begin
                 case (op)
-                    `INST_J: next_state = sif;
+                    `INST_J: next_state = swait3;
                     `INST_BEQ: next_state = exe2;
                     `INST_LW: next_state = exe3;
                     `INST_SW: next_state = exe3;

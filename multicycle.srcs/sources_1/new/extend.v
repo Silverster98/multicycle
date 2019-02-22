@@ -23,3 +23,11 @@ module load_uper_imm(
     
     assign output32 = {imm16, 16'b0};
 endmodule
+
+module unsign_extend_26_left2(
+    input wire[25:0] imm26,
+    output wire[31:0] output32
+    );
+    
+    assign output32 = {4'b0000, imm26, 2'b00};
+endmodule

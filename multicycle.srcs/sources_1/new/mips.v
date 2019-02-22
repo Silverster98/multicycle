@@ -5,6 +5,7 @@ module mips(
     input wire rst
     );
     
+    wire pc_write;
     wire[31:0] npc;
     wire[31:0] pc;
     wire pc_w;
@@ -66,6 +67,7 @@ module mips(
     cu mips_cu(
         .clk(clk),
         .rst(rst),
+        .pc_write(pc_write),
         .beqout(beqout),
         .op(op),
         .func(func),
@@ -82,12 +84,12 @@ module mips(
         .sel_npc(sel_npc)
     );
     
-    // instruction fetch
+    // instruction fetch 
     
     pc mips_pc(
         .rst(rst),
         .clk(clk),
-        .pc_en(pc_w),
+        .pc_en(pc_write),
         .npc(npc),
         .pc(pc)
     );

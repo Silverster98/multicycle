@@ -8,6 +8,7 @@ module cu(
     input wire[5:0] op,
     input wire[5:0] func,
     
+    output wire pc_write,
     output reg pc_w,
     output reg sel_pc_addr_mux,
     output reg ram_w,
@@ -30,9 +31,14 @@ module cu(
                    swb1 = 4'b0110, // sub, and, addiu, or...
                    swb2 = 4'b0111, // lw
                    swait1 = 4'b1000, // in lw wait ram
-                   swait2 = 4'b1001; // in lw wait ram
+                   swait2 = 4'b1001, // in lw wait ram
+                   swait3 = 4'b1010, // in beq wait ram
+                   swait4 = 4'b1011; // in beq wait ram
     
     reg[3:0] state, next_state;
+    
+    assign pc_write = pc_w == 1 ? 1 :
+                      (state == 4'b0011 && beqout == 1) ? 1 : 0;
     initial begin
         state = sif;
         pc_w = 0;
@@ -69,7 +75,7 @@ module cu(
                 endcase
             end
             exe1: next_state = swb1;
-            exe2: next_state = sif;
+            exe2: next_state = swait3;
             exe3: next_state = smem;
             smem: begin
                 if (op == `INST_LW) next_state = swait1;
@@ -77,6 +83,8 @@ module cu(
             end
             swait1: next_state = swait2;
             swait2: next_state = swb2;
+            swait3: next_state = swait4;
+            swait4: next_state = sif;
             swb1: next_state = sif;
             swb2: next_state = sif;
             default: next_state = sif;
@@ -84,6 +92,7 @@ module cu(
     end
     
     always @ (state) begin
+        $display(state);
         if (state == sif) pc_w = 1;
         else pc_w = 0;
         
@@ -105,18 +114,19 @@ module cu(
         if (state == swb1 || state == swb2) rf_w = 1;
         else rf_w = 0;
         
-        if (state == sif) sel_alu_srcA = 0;
+        if (state == sif || state == sid) sel_alu_srcA = 0;
         else sel_alu_srcA = 1;
         
-        if (state == sif && op == `INST_BEQ) sel_alu_srcB = 3'b011;
-        else if (state == sif) sel_alu_srcB = 3'b001;
+        if (state == sif) sel_alu_srcB = 3'b001;
+        else if (state == sid) sel_alu_srcB = 3'b011;
         else if(op == `INST_ADDIU || op == `INST_ORI || op == `INST_SW || op == `INST_LW) sel_alu_srcB = 3'b010;
         else if(op == `INST_LUI) sel_alu_srcB = 3'b100;
         else sel_alu_srcB = 3'b000;
         
-        sel_npc = 0;
+        if (state == exe2) sel_npc = 1;
+        else sel_npc = 0;
         
-        if (state == 3'b000) alu_ctrl = 3'b000;
+        if (state == sif || state == sid) alu_ctrl = 3'b000;
         else begin
         case (op)
             `INST_ORI: alu_ctrl = 3'b011; // ori
@@ -130,4 +140,5 @@ module cu(
         endcase
         end
     end
+    
 endmodule
